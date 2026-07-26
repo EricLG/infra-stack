@@ -42,7 +42,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/clamav:/var/lib/clamav
-      - /volume1/Videos/Downloads:/scan:ro
+      - /volume1/Videos:/media:ro
     networks:
       - infra
 
