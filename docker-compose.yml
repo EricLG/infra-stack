@@ -1,0 +1,48 @@
+name: infra-stack
+
+services:
+
+  # Dynamic DNS
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    restart: unless-stopped
+    environment:
+      - SUBDOMAINS=${DUCKDNS_SUBDOMAIN}
+      - TOKEN=${DUCKDNS_TOKEN}
+      - TZ=${TZ}
+
+  # Reverse proxy + SSL
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "81:81"
+    volumes:
+      - ./config/nginx-proxy-manager/data:/data
+      - ./config/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    networks:
+      - proxy-network
+      - infra
+
+  # DNS server
+  adguardhome:
+    image: adguard/adguardhome:latest
+    restart: unless-stopped
+    ports:
+      - "3001:3000/tcp"
+      - "53:53/tcp"
+      - "53:53/udp"
+    volumes:
+      - ./config/adguardhome/conf:/opt/adguardhome/conf
+      - ./config/adguardhome/work:/opt/adguardhome/work
+    networks:
+      - infra
+
+networks:
+  infra:
+    driver: bridge
+
+  proxy-network:
+    external: true
