@@ -36,6 +36,16 @@ services:
       - ./config/adguardhome/conf:/opt/adguardhome/conf
       - ./config/adguardhome/work:/opt/adguardhome/work
 
+  # Antivirus
+  clamav:
+    image: clamav/clamav:latest
+    restart: unless-stopped
+    volumes:
+      - ./config/clamav:/var/lib/clamav
+      - /volume1/Videos:/scan:ro
+    networks:
+      - infra
+
 networks:
   infra:
     driver: bridge
