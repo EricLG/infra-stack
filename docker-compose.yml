@@ -7,7 +7,7 @@ services:
     image: lscr.io/linuxserver/duckdns:latest
     restart: unless-stopped
     environment:
-      - SUBDOMAINS=${DUCKDNS_SUBDOMAIN}
+      - SUBDOMAINS=la-taverne-de-may
       - TOKEN=${DUCKDNS_TOKEN}
       - TZ=${TZ}
 
@@ -25,20 +25,16 @@ services:
     networks:
       - proxy-network
       - infra
+      - app-network
 
   # DNS server
   adguardhome:
     image: adguard/adguardhome:latest
     restart: unless-stopped
-    ports:
-      - "3001:3000/tcp"
-      - "53:53/tcp"
-      - "53:53/udp"
+    network_mode: host
     volumes:
       - ./config/adguardhome/conf:/opt/adguardhome/conf
       - ./config/adguardhome/work:/opt/adguardhome/work
-    networks:
-      - infra
 
 networks:
   infra:
@@ -46,3 +42,7 @@ networks:
 
   proxy-network:
     external: true
+
+  app-network:
+    external: true
+    name: recipes-deploy_app-network
