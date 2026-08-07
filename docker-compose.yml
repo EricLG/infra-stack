@@ -7,7 +7,7 @@ services:
     image: lscr.io/linuxserver/duckdns:latest
     restart: unless-stopped
     environment:
-      - SUBDOMAINS=la-taverne-de-may
+      - SUBDOMAINS=la-taverne-de-may,jellyfin-mimir
       - TOKEN=${DUCKDNS_TOKEN}
       - TZ=${TZ}
 
